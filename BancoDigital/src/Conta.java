@@ -1,6 +1,6 @@
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 public class Conta implements IConta{
     private List<Operacao> operacoes;
     private static int idContas = 0;
-    private int id;
-    private Cliente cliente;
+    private final int id;
+    private final Cliente cliente;
     private double saldo;
 
     public Conta(Cliente cliente, double saldo) {
@@ -17,7 +17,7 @@ public class Conta implements IConta{
         this.id = Conta.idContas;
         this.cliente = cliente;
         this.saldo = saldo;
-        this.operacoes = new ArrayList<Operacao>();
+        this.operacoes = new ArrayList<>();
     }
 
     public double getSaldo() {
@@ -28,19 +28,23 @@ public class Conta implements IConta{
         return cliente.toString();
     }
 
+    @Override
     public void creditar(double valor){
         saldo += valor;
     }
 
+    @Override
     public void debitar(double valor) throws Exception{
         if (valor > saldo) throw new Exception("Saldo insuficiente.");
         else saldo -= valor;
     }
+    @Override
     public void depositar(double valor) {
         creditar(valor);
         operacoes.add(new Operacao(valor, "Depósito", this, this));
     }
 
+    @Override
     public void sacar(double valor){
         try {
             debitar(valor);
@@ -54,6 +58,7 @@ public class Conta implements IConta{
     public int getId(){
         return this.id;
     }
+    @Override
     public void transferir(double valor, IConta conta) throws Exception{
         try {
             debitar(valor);
