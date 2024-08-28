@@ -1,38 +1,81 @@
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-public class Conta {
-    private String nome;
+
+
+public class Conta implements IConta{
+    private List<Operacao> operacoes;
+    private static int idContas = 0;
+    private int id;
+    private Cliente cliente;
     private double saldo;
 
-    public Conta(String nome, double saldo) {
-        this.nome = nome;
+    public Conta(Cliente cliente, double saldo) {
+        Conta.idContas += 1;
+        this.id = Conta.idContas;
+        this.cliente = cliente;
         this.saldo = saldo;
+        this.operacoes = new ArrayList<Operacao>();
     }
 
     public double getSaldo() {
         return saldo;
     }
 
-    public String getNome() {
-        return nome;
+    public String getCliente() {
+        return cliente.toString();
     }
 
-    public void depositar(double valor) {
+    public void creditar(double valor){
         saldo += valor;
     }
 
-    public void sacar(double valor) throws Exception{
-        if (valor > saldo) throw new Exception("Saldo insuficiente");
+    public void debitar(double valor) throws Exception{
+        if (valor > saldo) throw new Exception("Saldo insuficiente.");
         else saldo -= valor;
     }
+    public void depositar(double valor) {
+        creditar(valor);
+        operacoes.add(new Operacao(valor, "Depósito", this, this));
+    }
 
-    public void transferir(double valor, Conta conta) throws Exception {
+    public void sacar(double valor){
         try {
-            sacar(valor);
-            conta.depositar(valor);
+            debitar(valor);
+            System.out.println("Saque concluído com sucesso!");
+            operacoes.add(new Operacao((-1)*valor, "Saque", this, this));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public int getId(){
+        return this.id;
+    }
+    public void transferir(double valor, IConta conta) throws Exception{
+        try {
+            debitar(valor);
+            conta.creditar(valor);
         }
         catch (Exception e) {
             throw e;
-        }  
+        }
+    }
+    public void adicionaOperacao(Operacao operacao){
+        this.operacoes.add(operacao);
+    }
+    @Override
+    public String toString() {
+        return  "Titular da Conta: " + this.cliente.getNome() + "\n" +
+                "Id: " + id +   "\n" +
+                "Extrato: \n\n" + operacoes.stream().map((operacao) -> operacao.toString()).collect(Collectors.joining("\n")) + "\n" +
+                "   Saldo: " + saldo + "\n";
+    }
+
+    @Override
+    public void imprimirExtrato() {
+        System.out.println(this.toString());
     }
 }

@@ -1,12 +1,12 @@
 public class ContaPoupanca extends Conta{
 
-    private double rendimento;
-
-    public ContaPoupanca(String nome, double saldo) {
-        super(nome, saldo);
+    public ContaPoupanca(Cliente cliente, double saldo) {
+        super(cliente, saldo);
     }
 
-    public double getRendimento() {
-        return rendimento;
+    @Override
+    public void imprimirExtrato(){
+        System.out.println("=== Extrato Conta Poupança ===");
+        super.imprimirExtrato();
     }
 }
