@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public class Banco {
     ArrayList<Conta> contas = new ArrayList();
+    String nome;
 
     public void adicionaConta(Conta conta){
         contas.add(conta);
@@ -16,5 +17,22 @@ public class Banco {
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public String getNome(){
+        return this.nome;
+    }
+
+    public void setNome(String nome){
+        this.nome = nome;
+    }
+
+    public ArrayList<Conta> getContas(){
+        return this.contas;
+    }
+
+    public void imprimirExtratos(){
+        System.out.println("\n=== Extratos das Contas do Banco " + this.getNome() + " ===\n");
+        contas.stream().forEach(conta -> conta.imprimirExtrato());
     }
 }
